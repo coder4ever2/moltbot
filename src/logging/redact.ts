@@ -23,17 +23,26 @@ const DEFAULT_REDACT_PATTERNS: string[] = [
   String.raw`\bBearer\s+([A-Za-z0-9._\-+=]{18,})\b`,
   // PEM blocks.
   String.raw`-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]+?-----END [A-Z ]*PRIVATE KEY-----`,
-  // Common token prefixes.
-  String.raw`\b(sk-[A-Za-z0-9_-]{8,})\b`,
-  String.raw`\b(ghp_[A-Za-z0-9]{20,})\b`,
-  String.raw`\b(github_pat_[A-Za-z0-9_]{20,})\b`,
-  String.raw`\b(xox[baprs]-[A-Za-z0-9-]{10,})\b`,
-  String.raw`\b(xapp-[A-Za-z0-9-]{10,})\b`,
-  String.raw`\b(gsk_[A-Za-z0-9_-]{10,})\b`,
-  String.raw`\b(AIza[0-9A-Za-z\-_]{20,})\b`,
-  String.raw`\b(pplx-[A-Za-z0-9_-]{10,})\b`,
-  String.raw`\b(npm_[A-Za-z0-9]{10,})\b`,
-  String.raw`\b(\d{6,}:[A-Za-z0-9_-]{20,})\b`,
+  // Common token prefixes with specific formats.
+  String.raw`\b(sk-[A-Za-z0-9_-]{8,})\b`, // OpenAI, Anthropic
+  String.raw`\b(ghp_[A-Za-z0-9]{20,})\b`, // GitHub personal access token
+  String.raw`\b(github_pat_[A-Za-z0-9_]{20,})\b`, // GitHub fine-grained PAT
+  String.raw`\b(gho_[A-Za-z0-9]{20,})\b`, // GitHub OAuth token
+  String.raw`\b(ghs_[A-Za-z0-9]{20,})\b`, // GitHub server token
+  String.raw`\b(ghr_[A-Za-z0-9]{20,})\b`, // GitHub refresh token
+  String.raw`\b(xox[baprs]-[A-Za-z0-9-]{10,})\b`, // Slack
+  String.raw`\b(xapp-[A-Za-z0-9-]{10,})\b`, // Slack app
+  String.raw`\b(gsk_[A-Za-z0-9_-]{10,})\b`, // Groq
+  String.raw`\b(AIza[0-9A-Za-z\-_]{20,})\b`, // Google API key
+  String.raw`\b(pplx-[A-Za-z0-9_-]{10,})\b`, // Perplexity
+  String.raw`\b(npm_[A-Za-z0-9]{10,})\b`, // npm token
+  String.raw`\b(\d{6,}:[A-Za-z0-9_-]{20,})\b`, // Discord bot token
+  // JWT tokens (eyJ header indicates JSON Web Token).
+  String.raw`\b(eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,})\b`,
+  // AWS access keys (AKIA prefix for access key ID).
+  String.raw`\b(AKIA[0-9A-Z]{16})\b`,
+  // Azure connection strings.
+  String.raw`AccountKey=([A-Za-z0-9+/=]{40,})`,
 ];
 
 type RedactOptions = {
