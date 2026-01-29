@@ -188,11 +188,13 @@ export function assertGatewayAuthConfigured(auth: ResolvedGatewayAuth): void {
   if (auth.mode === "token" && !auth.token) {
     if (auth.allowTailscale) return;
     throw new Error(
-      "gateway auth mode is token, but no token was configured (set gateway.auth.token or CLAWDBOT_GATEWAY_TOKEN)",
+      "gateway auth configuration incomplete (set gateway.auth.token or CLAWDBOT_GATEWAY_TOKEN)",
     );
   }
   if (auth.mode === "password" && !auth.password) {
-    throw new Error("gateway auth mode is password, but no password was configured");
+    throw new Error(
+      "gateway auth configuration incomplete (set gateway.auth.password or CLAWDBOT_GATEWAY_PASSWORD)",
+    );
   }
 }
 

@@ -83,6 +83,18 @@ function formatGatewayAuthFailureMessage(params: {
   const isCli = isGatewayCliClient(client);
   const isControlUi = client?.id === GATEWAY_CLIENT_IDS.CONTROL_UI;
   const isWebchat = isWebchatClient(client);
+
+  // For security, only provide detailed error messages to trusted local clients
+  // that are CLIs or control UIs. Remote clients get generic unauthorized messages
+  // to prevent information disclosure about the authentication configuration.
+  const provideTrustedHints = isCli || isControlUi;
+
+  if (!provideTrustedHints) {
+    // Generic message for remote/untrusted clients to avoid revealing auth mode
+    return "unauthorized: authentication failed";
+  }
+
+  // Detailed messages only for trusted clients (CLI, Control UI)
   const uiHint = "open a tokenized dashboard URL or paste token in Control UI settings";
   const tokenHint = isCli
     ? "set gateway.remote.token to match gateway.auth.token"
