@@ -67,7 +67,7 @@ function ensureTranscriptFile(params: { transcriptPath: string; sessionId: strin
 } {
   if (fs.existsSync(params.transcriptPath)) return { ok: true };
   try {
-    fs.mkdirSync(path.dirname(params.transcriptPath), { recursive: true });
+    fs.mkdirSync(path.dirname(params.transcriptPath), { recursive: true, mode: 0o700 });
     const header = {
       type: "session",
       version: CURRENT_SESSION_VERSION,
@@ -75,7 +75,11 @@ function ensureTranscriptFile(params: { transcriptPath: string; sessionId: strin
       timestamp: new Date().toISOString(),
       cwd: process.cwd(),
     };
-    fs.writeFileSync(params.transcriptPath, `${JSON.stringify(header)}\n`, "utf-8");
+    // Set restrictive permissions on transcript files to protect conversation history
+    fs.writeFileSync(params.transcriptPath, `${JSON.stringify(header)}\n`, {
+      encoding: "utf-8",
+      mode: 0o600,
+    });
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : String(err) };
